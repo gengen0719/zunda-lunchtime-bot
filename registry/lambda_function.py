@@ -1,6 +1,5 @@
 import json
 import boto3
-import logging
 
 # DynamoDBクライアント
 dynamodb = boto3.resource("dynamodb")
@@ -8,6 +7,7 @@ table = dynamodb.Table("LINE_Users")
 
 def lambda_handler(event, context):
     print("LINE EVENT dump:", json.dumps(event, indent=2))
+    return_message = "Not registered"
 
     # メッセージ送信、友達登録を行ったユーザーの userId と displayName を取得
     for event_data in event.get("events", []):
@@ -29,8 +29,9 @@ def lambda_handler(event, context):
             # DynamoDB に保存
             table.put_item(Item=user_data)
             print("Saved userId: ", user_id, "displayName: ", display_name)
+            return_message = "Registered"
 
     return {
         "statusCode": 200,
-        "body": "OK"
+        "body": return_message
     }
