@@ -6,10 +6,6 @@ import logging
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("LINE_Users")
 
-# CloudWatch ログ設定
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
 def lambda_handler(event, context):
     print("LINE EVENT dump:", json.dumps(event, indent=2))
 
@@ -17,6 +13,7 @@ def lambda_handler(event, context):
     for event_data in event.get("events", []):
         if event_data["type"] != "follow":
             #follow event以外は処理しない
+            print("LINE EVENT is not follow.")
             continue
 
         if "source" in event_data and "userId" in event_data["source"]:
@@ -31,7 +28,7 @@ def lambda_handler(event, context):
 
             # DynamoDB に保存
             table.put_item(Item=user_data)
-            logger.info(f"Saved userId: {user_id}, displayName: {display_name}")
+            print("Saved userId: ", user_id, "displayName: ", display_name)
 
     return {
         "statusCode": 200,
