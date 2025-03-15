@@ -18,7 +18,7 @@ def lambda_handler(event, context):
 
         if "source" in event_data and "userId" in event_data["source"]:
             user_id = event_data["source"]["userId"]
-            display_name = event_data.get("source", {}).get("displayName", "Unknown")
+            display_name = event_data.get("source", {}).get("displayName", "Unknown") # 取れていない
             timestamp = event_data["timestamp"]
             user_data = {
                 "userId": user_id,
